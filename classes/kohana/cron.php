@@ -590,19 +590,17 @@ class Kohana_Cron
 		{
 			if ($slash = strrpos($value, '/'))
 			{
-				$step = substr($value, $slash + 1);
+				$step = (int) substr($value, $slash + 1);
 				$value = substr($value, 0, $slash);
 			}
 
-			if ($dash = strpos($value, '-'))
-			{
-				$max = (int) substr($value, $dash + 1);
-				$min = (int) substr($value, 0, $dash);
-			}
-
-			if ($dash OR $value === '*')
+			if ($value === '*')
 			{
 				$result = array_merge($result, range($min, $max, $slash ? $step : 1));
+			}
+			elseif ($dash = strpos($value, '-'))
+			{
+				$result = array_merge($result, range( (int) substr($value, 0, $dash), (int) substr($value, $dash + 1), $slash ? $step : 1));
 			}
 			else
 			{
