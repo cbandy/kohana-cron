@@ -30,9 +30,13 @@ If not, copy the file to `application/config/cron.php` and change the values acc
 
 ## Usage
 
-In it's simplest form a task is a [PHP callback][1] and times at which it should run.
+In its simplest form, a task is a [PHP callback][1] and times at which it should run.
 To configure a task call `Cron::set($name, array($frequency, $callback))` where
 `$frequency` is a string of date and time fields identical to those found in [crontab][2].
+For example,
+
+	Cron::set('reindex_catalog', array('@daily', 'Catalog::regenerate_index'));
+	Cron::set('calendar_notifications', array('*/5 * * * *', 'Calendar::send_emails'));
 
 Configured tasks are run with their appropriate frequency by calling `Cron::run()`. Call
 this method in your bootstrap file, and you're done!
