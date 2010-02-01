@@ -498,7 +498,7 @@ class Kohana_Cron
 			}
 			else
 			{
-				// Both Day of Month and Day of week are restricted, use earliest one
+				// Both Day of Month and Day of Week are restricted, use earliest one
 				$from['mday'] = min($monthday, reset($this->_period['monthdays']));
 			}
 		}
@@ -600,11 +600,16 @@ class Kohana_Cron
 			}
 			elseif ($dash = strpos($value, '-'))
 			{
-				$result = array_merge($result, range( (int) substr($value, 0, $dash), (int) substr($value, $dash + 1), $slash ? $step : 1));
+				$result = array_merge($result, range(max($min, (int) substr($value, 0, $dash)), min($max, (int) substr($value, $dash + 1)), $slash ? $step : 1));
 			}
 			else
 			{
-				$result[] = (int) $value;
+				$value = (int) $value;
+
+				if ($min <= $value AND $value <= $max)
+				{
+					$result[] = $value;
+				}
 			}
 		}
 
