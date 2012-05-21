@@ -109,8 +109,15 @@ class Kohana_Cron
 			$now = time();
 			$threshold = $now - Kohana::config('cron')->window;
 
+                        $used_times = array(); // to weed out unused schedules and jobs
+
 			foreach (Cron::$_jobs as $name => $job)
 			{
+                                // store e.g. 'job/0 * * * *' in cache so that
+                                // if the schedule is changed, it effectively
+                                // becomes a new job
+                                $name = $name.'/'.$job->_period;
+
 				if (empty(Cron::$_times[$name]) OR Cron::$_times[$name] < $threshold)
 				{
 					// Expired
@@ -132,7 +139,14 @@ class Kohana_Cron
 
 					$job->execute();
 				}
+
+                                // store any job/schedule combos in use
+                                $used_times[$name] = Cron::$_times[$name];
+
 			}
+
+                        // store only used cron times and job names
+                        Cron::$_times = $used_times;
 		}
 		catch (Exception $e) {}
 
